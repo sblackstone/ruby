@@ -32,15 +32,49 @@ class Integer
 
   # Returns true if +self+ is a prime number, else returns false.
   def prime?
-    return self >= 2 if self <= 3
-    return true if self == 5
-    return false unless 30.gcd(self) == 1
-    (7..Integer.sqrt(self)).step(30) do |p|
-      return false if
-        self%(p)    == 0 || self%(p+4)  == 0 || self%(p+6)  == 0 || self%(p+10) == 0 ||
-        self%(p+12) == 0 || self%(p+16) == 0 || self%(p+22) == 0 || self%(p+24) == 0
+    # https://en.wikipedia.org/wiki/Miller%E2%80%93Rabin_primality_test
+    # https://arxiv.org/pdf/1509.00864.pdf
+    #
+    # if n < 2**64, it is enough to test a = 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, and 37
+    # and the result will be deterministic.
+    #
+
+    return false if self < 2 # Covers negatives, 0, 1
+    return true  if self < 4 # 2, 3
+    return false if self % 2 == 0 # Check if even
+
+    # Express (n-1) = 2**s * d
+    d = (self-1)
+    s = 0
+    while (d % 2 == 0)
+      s +=1
+      d /= 2
     end
-    true
+
+    [2,3,5,7,11,13,17,19,23,29,31,37].each do |a|
+      # Calculate a**d mod n
+      x = 1
+      while d > 0
+        x = (x * a) % self if d & 1 == 1
+        a = (a * a) % self
+        d >>= 1;
+      end
+            
+      next if x == 1 || x == (self - 1) || self == a
+      flag = false
+      1.upto(s-1) do |k|
+        x = x*x % self
+        if x == 1
+          return false
+        elsif x == (self - 1)
+          flag = true
+          break
+        end
+      end
+      next if flag
+      return false
+    end
+    return true
   end
 
   # Iterates the given block over all prime numbers.
