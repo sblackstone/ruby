@@ -32,15 +32,54 @@ class Integer
 
   # Returns true if +self+ is a prime number, else returns false.
   def prime?
-    return self >= 2 if self <= 3
-    return true if self == 5
-    return false unless 30.gcd(self) == 1
-    (7..Integer.sqrt(self)).step(30) do |p|
-      return false if
-        self%(p)    == 0 || self%(p+4)  == 0 || self%(p+6)  == 0 || self%(p+10) == 0 ||
-        self%(p+12) == 0 || self%(p+16) == 0 || self%(p+22) == 0 || self%(p+24) == 0
+    # https://en.wikipedia.org/wiki/Miller%E2%80%93Rabin_primality_test
+    # https://arxiv.org/pdf/1509.00864.pdf
+    #
+    # if n < 3,317,044,064,679,887,385,961,981,
+    # it is enough to test a = 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, and 41.
+    # and the result will be deterministic.
+    #
+
+    if self > 3317044064679887385961981
+      raise ArgumentError, ".prime? is only valid for values less than 3,317,044,064,679,887,385,961,981"
     end
-    true
+
+    return false if self < 2
+    return true  if self < 4
+    return false if self.even?
+
+    r = 0
+    d = self - 1
+
+    while d.even?
+      d /= 2
+      r += 1
+    end
+
+    if self < 4759123141
+      aN = [ 2,7, 61 ]
+    else
+      aN = [2,3,5,7,11,13,17,19,23,29,31,37,41]
+    end
+
+    aN.each do |a|
+      x = a.pow(d, self)
+      next if x == 1 || x == (self-1) || a == self
+
+      (r-1).times do
+        x = x.pow(2, self)
+        if x == (self-1)
+          break
+        end
+      end
+
+      if (x == self-1)
+        next
+      else
+        return false
+      end
+    end
+    return true
   end
 
   # Iterates the given block over all prime numbers.

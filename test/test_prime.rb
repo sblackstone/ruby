@@ -219,7 +219,11 @@ class TestPrime < Test::Unit::TestCase
 
       assert_equal(-PRIMES.inject(&:*), Integer.from_prime_division([[-1, 1]] + PRIMES.map{|p| [p,1]}))
     end
-
+    
+    def test_prime_bounds_check
+       assert_raise(ArgumentError) { 33170440646798873859619812.prime? }
+    end
+        
     def test_prime?
       PRIMES.each do |p|
         assert_predicate(p, :prime?)
@@ -240,9 +244,6 @@ class TestPrime < Test::Unit::TestCase
 
       # large composite
       assert_not_predicate(((2**13-1) * (2**17-1)), :prime?)
-
-      # factorial
-      assert_not_predicate((2...100).inject(&:*), :prime?)
 
       # negative
       assert_not_predicate(-1, :prime?)
