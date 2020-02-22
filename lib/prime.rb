@@ -42,14 +42,14 @@ class Integer
     # and the result will be deterministic.
     #
 
-    return false if self.even?
     return false if self < 2
+    return true  if self < 4
+    return false if self.even?
 
     unless self < 3317044064679887385961981
       raise ArgumentError, ".prime? is only valid for values less than 3,317,044,064,679,887,385,961,981"
     end
 
-    return true  if self < 4
 
     r = 1
     d = (self - 1) / 2
