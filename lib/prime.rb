@@ -40,7 +40,6 @@ class Integer
     # if n < 3,317,044,064,679,887,385,961,981,
     # it is enough to test a = 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, and 41.
     # and the result will be deterministic.
-    #
 
     return false if self < 2
     return true  if self < 4
@@ -80,46 +79,21 @@ class Integer
 
   private
   def sufficient_miller_rabin_bases
-      # if n < 2,047, it is enough to test a = 2;
+      # Miller-Rabin's complexity is O(k log^3n).
+      # So we can reduce the complexity by reducing the number of bases tested.
+      # Using values from https://en.wikipedia.org/wiki/Miller%E2%80%93Rabin_primality_test
       return [2]                                  if self < 2_047
-
-      # if n < 1,373,653, it is enough to test a = 2 and 3
       return [2,3]                                if self < 1_373_653
-
-      # # if n < 9,080,191, it is enough to test a = 31 and 73;
       return [31,73]                              if self < 9_080_191
-
-      # if n < 25,326,001, it is enough to test a = 2, 3, and 5
       return [2,3,5]                              if self < 25_326_001
-
-      # if n < 3,215,031,751, it is enough to test a = 2, 3, 5, and 7
       return [2,3,5,7]                            if self < 3_215_031_751
-
-      # # if n < 4,759,123,141, it is enough to test a = 2, 7, and 61;
       return [2,7,61]                             if self < 4_759_123_141
-
-      # if n < 1,122,004,669,633, it is enough to test a = 2, 13, 23, and 1662803;
       return [2,13,23,1662803]                    if self < 1_122_004_669_633
-
-      # if n < 2,152,302,898,747, it is enough to test a = 2, 3, 5, 7, and 11;
       return [2,3,5,7,11]                         if self < 2_152_302_898_747
-
-      # if n < 3,474,749,660,383, it is enough to test a = 2, 3, 5, 7, 11, and 13;
       return [2,3,5,7,11,13]                      if self < 3_474_749_660_383
-
-      # if n < 341,550,071,728,321, it is enough to test a = 2, 3, 5, 7, 11, 13, and 17.
       return [2,3,5,7,11,13,17]                   if self < 341_550_071_728_321
-
-      # if n < 3,825,123,056,546,413,051, it is enough to test a = 2, 3, 5, 7, 11, 13, 17, 19, and 23.
       return [2,3,5,7,11,13,17,19,23]             if self < 3_825_123_056_546_413_051
-
-      # if n < 18,446,744,073,709,551,616 = 264, it is enough to test a = 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, and 37.
-      return [2,3,5,7,11,13,17,19,23,29,31,37]    if self < 18_446_744_073_709_551_616
-
-      # if n < 318,665,857,834,031,151,167,461, it is enough to test a = 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, and 37
       return [2,3,5,7,11,13,17,19,23,29,31,37]    if self < 318_665_857_834_031_151_167_461
-
-      # if n < 3,317,044,064,679,887,385,961,981, it is enough to test a = 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, and 41.
       return [2,3,5,7,11,13,17,19,23,29,31,37,41] if self < 3_317_044_064_679_887_385_961_981
   end
 
