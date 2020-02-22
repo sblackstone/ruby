@@ -42,6 +42,7 @@ class Integer
     # and the result will be deterministic.
     #
 
+    return false if self.even?
     return false if self < 2
 
     unless self < 3317044064679887385961981
@@ -49,7 +50,6 @@ class Integer
     end
 
     return true  if self < 4
-    return false if self.even?
 
     r = 1
     d = (self - 1) / 2
@@ -63,18 +63,11 @@ class Integer
       x = a.pow(d, self)
       next if x == 1 || x == (self-1) || a == self
 
-      (r-1).times do
+      return false if (r-1).times do
         x = x.pow(2, self)
-        if x == (self-1)
-          break
-        end
+        break if x == (self-1)
       end
 
-      if (x == self-1)
-        next
-      else
-        return false
-      end
     end
     return true
   end
