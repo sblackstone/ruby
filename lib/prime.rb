@@ -50,7 +50,6 @@ class Integer
       raise ArgumentError, ".prime? is only valid for values less than 3,317,044,064,679,887,385,961,981"
     end
 
-
     r = 1
     d = (self - 1) / 2
 
